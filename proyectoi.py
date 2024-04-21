@@ -28,3 +28,24 @@ for calle1 in calles:
             numero_peatones_calle2 = df.loc[(df['HORA'] == hora) & (df['NOMBRE_VIAL'] == calle2) & (df['FECHA'] == dia)]['PEATONES'].iloc[0]
             #vamos a asignar el valor que tendrá cada arista en nuestro diccionario, siendo el valor (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
             grafo_calles[calle1][calle2] = (numero_peatones_calle1 + numero_peatones_calle2)/distancia_entre_calle1ycalle2
+
+#creamos una función en la que implementaremos el algoritmo de Dijkstra
+def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
+    valor = {}
+    camino_optimo = []
+
+    for calle in grafo:
+        valor[calle] = float('-inf') #inicializamos todos los valores a -oo, y ponemos -inf ya que queremos que haga justo lo contrario de lo que haría el algoritmo de Dijkstra
+    valor[calle_inicio] = 0
+
+    calles = [calle for calle in grafo]
+    calles_visitadas = 0
+    while calles and calles_visitadas < num_calles_visitar:
+        calle_1=max(calles, key=valor.get)
+        calles.remove(calle_1)
+        camino_optimo.append(calle_1)
+        calles_visitadas += 1
+
+        for vecino in grafo[calle_1]:
+            if vecino in calles and valor[vecino] < valor[calle_1] + grafo[calle_1][vecino]:
+                valor[vecino] = valor[calle_1] + grafo[calle_1][vecino]
