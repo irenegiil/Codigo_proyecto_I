@@ -50,18 +50,19 @@ def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
         for vecino in grafo[calle_1]:
             if vecino in calles and valor[vecino] < valor[calle_1] + grafo[calle_1][vecino]:
                 valor[vecino] = valor[calle_1] + grafo[calle_1][vecino]
+    return camino_optimo
 
-    #vamos a dibujar nuestro camino mediante un grafo, para que se vea de una manera más visual utilizando la librería networkx
+def dibujar_grafo(grafo, camino):
     G = nx.DiGraph()
     plt.figure(figsize=(11,8))
     calles_camino = []
-    for i in camino_optimo:
+    for i in camino:
         calles_camino.append(i)
     G.add_nodes_from(calles_camino) #añadimos a nuestro grafo las calles como vértices (nodos)
 
-    for i in range(len(camino_optimo) - 1): #así recorremos cada calle
-        nodo_actual = camino_optimo[i]
-        vecino_actual = camino_optimo[i + 1]
+    for i in range(len(camino) - 1): #así recorremos cada calle
+        nodo_actual = camino[i]
+        vecino_actual = camino[i + 1]
         valor_arista = grafo[nodo_actual][vecino_actual] #vemos por cada calle, el valor asociado con su vecino
         G.add_edge(nodo_actual, vecino_actual, weight=valor_arista) #añadimos la arista con el valor calculado anteriormente
 
@@ -70,3 +71,4 @@ def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
     plt.show()
 
 print(camino_optimo_dijkstra(grafo_calles, calle, numero_calles))
+print(dibujar_grafo(grafo_calles, camino_optimo_dijkstra(grafo_calles, calle, numero_calles)))
