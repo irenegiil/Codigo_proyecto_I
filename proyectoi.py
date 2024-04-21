@@ -8,7 +8,7 @@ from geopy.distance import geodesic
 df = pd.read_csv('PEATONES_2021.csv', sep=';')
 calles = df['NOMBRE_VIAL'].unique()
 dia = input('Escriba el día y la hora actual pero poniendo de año 2021, por ejemplo 01/01/2021 0:00 : ')
-hora = input('Escriba la hora qué es pero aproximando a la hora en punto que esté más cerca, es decir, si son las 12:40 pon la 13:00 : ')
+hora = input('Escriba la hora qué es pero aproximando a la hora en punto que esté más cerca, es decir, si son las 12:40 pon las 13:00 : ')
 calle = input('Escriba el nombre de la calle en la que se encuentra: ')
 numero_calles = int(input('Escriba el número de cuántas calles quieres visitar: '))
 
