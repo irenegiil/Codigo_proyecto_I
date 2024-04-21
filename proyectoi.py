@@ -10,6 +10,7 @@ calles = df['NOMBRE_VIAL'].unique()
 dia = input('Escriba el día y la hora de ahora pero poniendo de año 2021, por ejemplo 01/01/2021 0:00 : ')
 hora = input('Escriba la hora qué es pero aproximando a la hora en punto que esté más cerca, es decir, si son las 12:40 pon la 13:00 : ')
 calle = input('Escriba el nombre de la calle en la que se encuentra: ')
+numero_calles = int(input('Escriba el número de cuántas calles quieres visitar: '))
 
 grafo_calles = {} #en este diccionario almacenaremos por cada calle, otro diccionario en el que cada clave serán sus vecinos y el valor será (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
 #vamos a construir este diccionario
@@ -49,3 +50,23 @@ def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
         for vecino in grafo[calle_1]:
             if vecino in calles and valor[vecino] < valor[calle_1] + grafo[calle_1][vecino]:
                 valor[vecino] = valor[calle_1] + grafo[calle_1][vecino]
+
+    #vamos a dibujar nuestro camino mediante un grafo, para que se vea de una manera más visual utilizando la librería networkx
+    G = nx.DiGraph()
+    plt.figure(figsize=(11,8))
+    calles_camino = []
+    for i in camino_optimo:
+        calles_camino.append(i)
+    G.add_nodes_from(calles_camino) #añadimos a nuestro grafo las calles como vértices (nodos)
+
+    for i in range(len(camino_optimo) - 1): #así recorremos cada calle
+        nodo_actual = camino_optimo[i]
+        vecino_actual = camino_optimo[i + 1]
+        valor_arista = grafo[nodo_actual][vecino_actual] #vemos por cada calle, el valor asociado con su vecino
+        G.add_edge(nodo_actual, vecino_actual, weight=valor_arista) #añadimos la arista con el valor calculado anteriormente
+
+    #dibujamos el grafo
+    nx.draw(G, nx.spring_layout(G), with_labels=True)
+    plt.show()
+
+print(camino_optimo_dijkstra(grafo_calles, calle, numero_calles))
