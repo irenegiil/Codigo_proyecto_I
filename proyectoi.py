@@ -14,8 +14,10 @@ numero_calles = int(input('Escriba el número de cuántas calles quieres visitar
 
 grafo_calles = {} #en este diccionario almacenaremos por cada calle, otro diccionario en el que cada clave serán sus vecinos y el valor será (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
 #vamos a construir este diccionario
+grafo_distancias = {}
 for calle1 in calles:
     grafo_calles[calle1]={}
+    grafo_distancias[calle1]={}
     for calle2 in calles:
         if calle1 != calle2: #para no calcular el valor entre una calle y ella misma
             latitud_calle1 = df[df['NOMBRE_VIAL'] == calle1]['LATITUD'].values[0].replace(',', '.') #accedemos a la latitud de la calle1 en nuestro csv
@@ -29,6 +31,7 @@ for calle1 in calles:
             numero_peatones_calle2 = df.loc[(df['HORA'] == hora) & (df['NOMBRE_VIAL'] == calle2) & (df['FECHA'] == dia)]['PEATONES'].iloc[0] #accedemos al número de peatones de la calle2 en función de la hora y el día
             #vamos a asignar el valor que tendrá cada arista en nuestro diccionario, siendo el valor (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
             grafo_calles[calle1][calle2] = (numero_peatones_calle1 + numero_peatones_calle2)/distancia_entre_calle1ycalle2
+            grafo_distancias[calle1][calle2] = distancia_entre_calle1ycalle2
 
 #creamos una función en la que implementaremos el algoritmo de Dijkstra
 def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
@@ -64,12 +67,11 @@ def dibujar_grafo(grafo, camino):
     for i in range(len(camino) - 1): #así recorremos cada calle
         nodo_actual = camino[i]
         vecino_actual = camino[i + 1]
-        valor_arista = grafo[nodo_actual][vecino_actual] #vemos por cada calle, el valor asociado con su vecino
+        valor_arista = grafo[nodo_actual][vecino_actual] #la longitud de la arista será proporcional a la distancia geodésica en kilómetros entre el nodo actual y el vecino actual
         G.add_edge(nodo_actual, vecino_actual, weight=valor_arista) #añadimos la arista con el valor calculado anteriormente entre esas 2 calles
 
     #dibujamos el grafo
     nx.draw(G, nx.spring_layout(G), with_labels=True)
     plt.show()
 
-print(camino_optimo_dijkstra(grafo_calles, calle, numero_calles)) #vemos el camino óptimo
-print(dibujar_grafo(grafo_calles, camino_optimo_dijkstra(grafo_calles, calle, numero_calles))) #dibujamos dicho camino óptimo mediante un grafo
+print(dibujar_grafo(grafo_distancias, camino_optimo_dijkstra(grafo_calles, calle, numero_calles))) #dibujamos dicho camino óptimo mediante un grafo
