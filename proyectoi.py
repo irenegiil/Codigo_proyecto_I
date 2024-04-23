@@ -75,5 +75,3 @@ def dibujar_grafo(grafo, camino):
     plt.show()
 
 dibujar_grafo(grafo_distancias, camino_optimo_dijkstra(grafo_calles, calle, numero_calles)) #dibujamos dicho camino óptimo mediante un grafo
-
-print("Hello")
