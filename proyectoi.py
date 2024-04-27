@@ -5,7 +5,7 @@ import networkx as nx #mediante esta librería, junto con matplotlib dibujaremos
 from geopy.distance import geodesic #mediante esta librería, calcularemos las distancias en kilómetros entre cada par de calles
 
 #cargamos nuestro csv que muestra por cada día y hora, la cantidad de peatones de algunas calles de Madrid junto con su latitud, longitud...
-df = pd.read_csv('PEATONES_2021.csv', sep=';')
+df = pd.read_csv('C:\Git\Codigo_proyecto_I\PEATONES_2021.csv', sep=';')
 calles = df['NOMBRE_VIAL'].unique() #en la variable calles, guardamos el nombre de todas las distintas calles
 dia = input('Escriba el día y la hora actual pero poniendo de año 2021, por ejemplo 01/01/2021 0:00 : ')
 hora = input('Escriba la hora qué es pero aproximando a la hora en punto que esté más cerca, es decir, si son las 12:40 pon las 13:00 : ')
