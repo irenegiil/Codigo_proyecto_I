@@ -37,10 +37,9 @@ for calle1 in calles:
 
             #mediante la librería Geopy, vamos a calcular la distancia geodésica entre calle1 y calle2
             distancia_entre_calle1ycalle2 = geodesic((float(latitud_calle1), float(longitud_calle1)), (float(latitud_calle2), float(longitud_calle2))).kilometers
-            numero_peatones_calle1 = df.loc[(df['HORA'] == hora) & (df['NOMBRE_VIAL'] == calle1) & (df['FECHA'] == dia)]['PEATONES'].iloc[0] #accedemos al número de peatones de la calle1 en función de la hora y el día
             numero_peatones_calle2 = df.loc[(df['HORA'] == hora) & (df['NOMBRE_VIAL'] == calle2) & (df['FECHA'] == dia)]['PEATONES'].iloc[0] #accedemos al número de peatones de la calle2 en función de la hora y el día
             #vamos a asignar el valor que tendrá cada arista en nuestro diccionario, siendo el valor (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
-            grafo_calles[calle1][calle2] = (numero_peatones_calle1 + numero_peatones_calle2)/distancia_entre_calle1ycalle2
+            grafo_calles[calle1][calle2] = (numero_peatones_calle2)/distancia_entre_calle1ycalle2
             grafo_distancias[calle1][calle2] = distancia_entre_calle1ycalle2
 
 #creamos una función en la que implementaremos el algoritmo de Dijkstra
@@ -81,7 +80,7 @@ def dibujar_grafo(grafo, camino):
         G.add_edge(nodo_actual, vecino_actual, weight=valor_arista) #añadimos la arista con el valor calculado anteriormente entre esas 2 calles
 
     #dibujamos el grafo
-    nx.draw(G, nx.spring_layout(G), with_labels=True, node_color='magenta')
+    nx.draw(G, nx.spring_layout(G), with_labels=True, node_color='lightskyblue', edge_color = 'navy')
     plt.show()
 
 dibujar_grafo(grafo_distancias, camino_optimo_dijkstra(grafo_calles, calle, numero_calles)) #dibujamos dicho camino óptimo mediante un grafo
