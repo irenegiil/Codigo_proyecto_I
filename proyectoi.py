@@ -6,7 +6,7 @@ from geopy.distance import geodesic #mediante esta librería, calcularemos las d
 
 #cargamos nuestro csv que muestra por cada día y hora, la cantidad de peatones de algunas calles de Madrid junto con su latitud, longitud...
 df = pd.read_csv('C:\Git\Codigo_proyecto_I\PEATONES_2021.csv', sep=';')
-
+df = df.drop(columns = ['IDENTIFICADOR', 'NÚMERO_DISTRITO', 'NÚMERO', 'CÓDIGO_POSTAL', 'OBSERVACIONES_DIRECCION'])
 def quitar_2021_y_hora_en_primera_columna(elemento):
     horaa=elemento.split(":")[0]
     if len(horaa)==12:
