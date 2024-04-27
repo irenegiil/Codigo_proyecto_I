@@ -6,8 +6,18 @@ from geopy.distance import geodesic #mediante esta librería, calcularemos las d
 
 #cargamos nuestro csv que muestra por cada día y hora, la cantidad de peatones de algunas calles de Madrid junto con su latitud, longitud...
 df = pd.read_csv('C:\Git\Codigo_proyecto_I\PEATONES_2021.csv', sep=';')
+
+def quitar_2021_y_hora_en_primera_columna(elemento):
+    horaa=elemento.split(":")[0]
+    if len(horaa)==12:
+        return elemento[:-10]
+    else:
+        return elemento[:-11]
+
+df['FECHA'] = df['FECHA'].apply(quitar_2021_y_hora_en_primera_columna)
+
 calles = df['NOMBRE_VIAL'].unique() #en la variable calles, guardamos el nombre de todas las distintas calles
-dia = input('Escriba el día y la hora actual pero poniendo de año 2021, por ejemplo 01/01/2021 0:00 : ')
+dia = input('Escriba el día actual, por ejemplo 01/01: ')
 hora = input('Escriba la hora qué es pero aproximando a la hora en punto que esté más cerca, es decir, si son las 12:40 pon las 13:00 : ')
 calle = input('Escriba el nombre de la calle en la que se encuentra: ')
 numero_calles = int(input('Escriba el número de cuántas calles quieres visitar: '))
@@ -71,7 +81,7 @@ def dibujar_grafo(grafo, camino):
         G.add_edge(nodo_actual, vecino_actual, weight=valor_arista) #añadimos la arista con el valor calculado anteriormente entre esas 2 calles
 
     #dibujamos el grafo
-    nx.draw(G, nx.spring_layout(G), with_labels=True)
+    nx.draw(G, nx.spring_layout(G), with_labels=True, node_color='magenta')
     plt.show()
 
 dibujar_grafo(grafo_distancias, camino_optimo_dijkstra(grafo_calles, calle, numero_calles)) #dibujamos dicho camino óptimo mediante un grafo
