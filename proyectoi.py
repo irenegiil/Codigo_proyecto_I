@@ -22,6 +22,16 @@ hora = input('Escriba la hora qué es pero aproximando a la hora en punto que es
 calle = input('Escriba el nombre de la calle en la que se encuentra: ')
 numero_calles = int(input('Escriba el número de cuántas calles quieres visitar: '))
 
+#Lanzamos errores manuales mediante la instrucción raise
+if dia not in df['FECHA']:
+    raise KeyError('La fecha proporcionada o no está bien escrita o no es válida')
+elif hora not in df['HORA']:
+    raise KeyError('La hora proporcionada o no está bien escrita o no es válida')
+elif calle not in calles:
+    raise KeyError('Tu calle inicio no es una calle válida para este algoritmo o la has escrito mal')
+elif not isinstance(numero_calles, int) or numero_calles < 0:
+    raise ValueError('El número de calles tiene que ser un número entero positivo')
+
 grafo_calles = {} #en este diccionario almacenaremos por cada calle, otro diccionario en el que cada clave serán sus vecinos y el valor será (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
 #vamos a construir este diccionario
 grafo_distancias = {}
