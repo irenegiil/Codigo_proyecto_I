@@ -7,6 +7,7 @@ from geopy.distance import geodesic #mediante esta librería, calcularemos las d
 #cargamos nuestro csv que muestra por cada día y hora, la cantidad de peatones de algunas calles de Madrid junto con su latitud, longitud...
 df = pd.read_csv('C:\Git\Codigo_proyecto_I\PEATONES_2021.csv', sep=';')
 df = df.drop(columns = ['IDENTIFICADOR', 'NÚMERO_DISTRITO', 'NÚMERO', 'CÓDIGO_POSTAL', 'OBSERVACIONES_DIRECCION'])
+df['NOMBRE_VIAL'] = df['NOMBRE_VIAL'].replace('Madrid Río. Puente de Segovia con Paseo Ermita del Santo Senda peatonal', 'Puente de Segovia con Paseo Ermita del Santo')
 def quitar_2021_y_hora_en_primera_columna(elemento):
     horaa=elemento.split(":")[0]
     if len(horaa)==12:
@@ -15,22 +16,18 @@ def quitar_2021_y_hora_en_primera_columna(elemento):
         return elemento[:-11]
 
 df['FECHA'] = df['FECHA'].apply(quitar_2021_y_hora_en_primera_columna)
-
 calles = df['NOMBRE_VIAL'].unique() #en la variable calles, guardamos el nombre de todas las distintas calles
 dia = input('Escriba el día actual, por ejemplo 01/01: ')
 hora = input('Escriba la hora qué es pero aproximando a la hora en punto que esté más cerca, es decir, si son las 12:40 pon las 13:00 : ')
 calle = input('Escriba el nombre de la calle en la que se encuentra: ')
-numero_calles = int(input('Escriba el número de cuántas calles quieres visitar: '))
 
 #Lanzamos errores manuales mediante la instrucción raise
-if dia not in df['FECHA']:
+if dia not in df['FECHA'].values:
     raise KeyError('La fecha proporcionada o no está bien escrita o no es válida')
-elif hora not in df['HORA']:
+elif hora not in df['HORA'].values:
     raise KeyError('La hora proporcionada o no está bien escrita o no es válida')
-elif calle not in calles:
+elif calle not in df['NOMBRE_VIAL'].values:
     raise KeyError('Tu calle inicio no es una calle válida para este algoritmo o la has escrito mal')
-elif not isinstance(numero_calles, int) or numero_calles < 0:
-    raise ValueError('El número de calles tiene que ser un número entero positivo')
 
 grafo_calles = {} #en este diccionario almacenaremos por cada calle, otro diccionario en el que cada clave serán sus vecinos y el valor será (peatonescalle1 + peatonescalle2)/(distanciaentrecalle1ycalle2)
 #vamos a construir este diccionario
@@ -53,7 +50,7 @@ for calle1 in calles:
             grafo_distancias[calle1][calle2] = distancia_entre_calle1ycalle2
 
 #creamos una función en la que implementaremos el algoritmo de Dijkstra
-def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
+def camino_optimo_dijkstra(grafo, calle_inicio):
     valor = {}
     camino_optimo = []
 
@@ -63,7 +60,7 @@ def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
 
     calles = [calle for calle in grafo]
     calles_visitadas = 0
-    while calles and calles_visitadas < num_calles_visitar:
+    while calles and calles_visitadas < 18:
         calle_1=max(calles, key=valor.get)
         calles.remove(calle_1)
         camino_optimo.append(calle_1)
@@ -77,7 +74,7 @@ def camino_optimo_dijkstra(grafo, calle_inicio, num_calles_visitar):
 #creamos una función que nos dibujará en forma de grafo nuestro camino más corto, siendo de una manera más visible el camino que el taxista deberá de seguir
 def dibujar_grafo(grafo, camino):
     G = nx.DiGraph()
-    plt.figure(figsize=(11,8)) #creamos la figura en la que se dibujará el grafo
+    plt.figure(figsize=(20,10)) #creamos la figura en la que se dibujará el grafo
     calles_camino = []
     for i in camino:
         calles_camino.append(i)
@@ -90,7 +87,7 @@ def dibujar_grafo(grafo, camino):
         G.add_edge(nodo_actual, vecino_actual, weight=valor_arista) #añadimos la arista con el valor calculado anteriormente entre esas 2 calles
 
     #dibujamos el grafo
-    nx.draw(G, nx.spring_layout(G), with_labels=True, node_color='lightskyblue', edge_color = 'navy')
+    nx.draw(G, nx.fruchterman_reingold_layout(G, k=0.1), with_labels=True, node_color='lightskyblue', edge_color = 'navy', font_size=11)
     plt.show()
 
-dibujar_grafo(grafo_distancias, camino_optimo_dijkstra(grafo_calles, calle, numero_calles)) #dibujamos dicho camino óptimo mediante un grafo
+dibujar_grafo(grafo_distancias, camino_optimo_dijkstra(grafo_calles, calle)) #dibujamos dicho camino óptimo mediante un grafo
