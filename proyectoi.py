@@ -30,7 +30,7 @@ elif calle not in df['NOMBRE_VIAL'].values:
     raise KeyError('Tu calle inicio no es una calle válida para este algoritmo o la has escrito mal')
 
 grafo_calles = {} #en este diccionario almacenaremos por cada calle, otro diccionario en el que cada clave serán las restantes 17 calles y el valor será (peatonescalle2)/(distanciaentrecalle1ycalle2)
-grafo_distancias = {} #este diccionario es igual que el de grafo_calles, solo que el valor que almacena es (distanciaentrecalle1ycalle2)
+grafo_distancias = {} #este diccionario es igual que el de grafo_calles, solo que el valor que almacena la clave del diccionario (que este diccionario es el valor de la primera clave), es (distanciaentrecalle1ycalle2)
 for calle1 in calles: #recorremos cada calle
     grafo_calles[calle1]={} #el valor de la clave calle1 es un diccionario
     grafo_distancias[calle1]={} #el valor de la clave calle1 es un diccionario
@@ -44,7 +44,7 @@ for calle1 in calles: #recorremos cada calle
             #mediante la librería Geopy, vamos a calcular la distancia geodésica entre calle1 y calle2
             distancia_entre_calle1ycalle2 = geodesic((float(latitud_calle1), float(longitud_calle1)), (float(latitud_calle2), float(longitud_calle2))).kilometers #calculamos la distancia geodésica en kilómetros entre calle1 y calle2 gracias a los valores de latitud y longitud de cada una de estas 2 calles
             numero_peatones_calle2 = df.loc[(df['HORA'] == hora) & (df['NOMBRE_VIAL'] == calle2) & (df['FECHA'] == dia)]['PEATONES'].iloc[0] #accedemos al número de peatones de la calle2 en función de la hora y el día
-            grafo_calles[calle1][calle2] = (numero_peatones_calle2)/distancia_entre_calle1ycalle2 #vamos a asignar el valor que tendrá cada arista en nuestro diccionario, siendo el valor (peatonescalle2)/(distanciaentrecalle1ycalle2)
+            grafo_calles[calle1][calle2] = (numero_peatones_calle2)/distancia_entre_calle1ycalle2 #vamos a asignar el valor que tendrá la clave del diccionario (que este diccionario es el valor de la primera clave), siendo el valor (peatonescalle2)/(distanciaentrecalle1ycalle2)
             grafo_distancias[calle1][calle2] = distancia_entre_calle1ycalle2 #vamos a asignar el valor que tendrá cada arista en nuestro diccionario, siendo el valor (distanciaentrecalle1ycalle2)
 
 #creamos una función en la que implementaremos el algoritmo de Dijkstra, pero con su funcionamiento inverso (calcula el camino más largo)
@@ -64,7 +64,7 @@ def camino_optimo_dijkstra(grafo, calle_inicio):
         camino_optimo.append(calle_1) #añadimos esa calle al camino óptimo
 
         for vecino in grafo[calle_1]: #recorremos los vecinos de la calle en concreto
-            if vecino in calles and valor[vecino] < valor[calle_1] + grafo[calle_1][vecino]: #aquí comprobamos si el vecino está en la lista calles y si su valor es menor al 
+            if vecino in calles and valor[vecino] < valor[calle_1] + grafo[calle_1][vecino]: #aquí comprobamos si el vecino está en la lista calles y si su valor es menor al de la calle en la que se encontraría más el valor de (peatonescalle2)/(distanciaentrecalle1ycalle2)
                 valor[vecino] = valor[calle_1] + grafo[calle_1][vecino] #actualizamos el valor del vecino
 
     return camino_optimo #devolvemos la lista con el camino óptimo
