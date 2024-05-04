@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt #mediante esta librería, junto con networkx dib
 import networkx as nx #mediante esta librería, junto con matplotlib dibujaremos nuestro grafo
 from geopy.distance import geodesic #mediante esta librería, calcularemos las distancias en kilómetros entre cada par de calles
 
-#cargamos nuestro csv que muestra por cada día y hora, la cantidad de peatones de algunas calles, plazas... y distintos lugares de Madrid junto con su latitud, longitud de dicho sitio.
-df = pd.read_csv('C:\Git\Codigo_proyecto_I\PEATONES_2021.csv', sep=';')
+df = pd.read_csv('C:\Git\Codigo_proyecto_I\PEATONES_2021.csv', sep=';') #cargamos nuestro csv que muestra por cada día y hora, la cantidad de peatones de algunas calles, plazas... y distintos lugares de Madrid junto con su latitud, longitud de dicho sitio.
 df = df.drop(columns = ['IDENTIFICADOR', 'NÚMERO_DISTRITO', 'NÚMERO', 'CÓDIGO_POSTAL', 'OBSERVACIONES_DIRECCION']) #eliminamos las columnas que no vamos a utlizar
 df['NOMBRE_VIAL'] = df['NOMBRE_VIAL'].replace('Madrid Río. Puente de Segovia con Paseo Ermita del Santo Senda peatonal', 'Puente de Segovia con Paseo Ermita del Santo') #cambiamos el nombre de ese lugar de Madrid por otro que hace referencia al mismo sitio pero es más corto, lo que nos facilita después la visualización del grafo
 
